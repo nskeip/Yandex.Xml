@@ -9,14 +9,28 @@ namespace Yandex.Xml.Builders {
     /// <summary>
     /// Builder for queryparams
     /// </summary>
-    public class DefaultQueryBuilder : IQueryBuilder {
+    public class DefaultQueryBuilder : IQueryBuilder
+    {
+        private string _startDomain = null;
+        
+        public DefaultQueryBuilder() {}
+
+        protected DefaultQueryBuilder(string startDomain)
+        {
+            _startDomain = startDomain;
+        }
+
         /// <summary>
         /// Built queryparams to url
         /// </summary>
         /// <param name="queryParams"></param>
         /// <returns></returns>
         public string Build(QueryParams queryParams) {
-            var sb = new StringBuilder($"https://yandex.{queryParams.SearchType.GetDescription()}/search/xml?");
+            var sb = new StringBuilder(
+                _startDomain != null ? 
+                    $"https://{_startDomain}/search/xml?" : 
+                    $"https://yandex.{queryParams.SearchType.GetDescription()}/search/xml?"
+                );
             sb.Append($"user={queryParams.User}&");
             sb.Append($"key={queryParams.Key}&");
             sb.Append($"query={HttpUtility.UrlEncode(queryParams.Query)}&");
